@@ -17,6 +17,7 @@ const send = require("../assets/icons/send.png");
 const user = require("../assets/icons/user.png");
 const wallet = require("../assets/icons/wallet.png");
 const ioIcon = require("../assets/icons/sign-in.png")
+const Ouput = require("../assets/icons/output.png")
 
 export default {
     back,
@@ -37,5 +38,6 @@ export default {
     send,
     user,
     wallet,
-    ioIcon
+    ioIcon,
+    Ouput
 }
