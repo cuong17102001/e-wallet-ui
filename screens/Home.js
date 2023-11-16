@@ -20,14 +20,14 @@ const Home = () => {
             icon: icons.reload,
             color: COLORS.purple,
             backgroundColor: COLORS.lightpurple,
-            description: "Top Up"
+            description: "Hot"
         },
         {
             id: 2,
             icon: icons.wallet,
             color: COLORS.red,
             backgroundColor: COLORS.lightRed,
-            description: "Wallet"
+            description: "Ví"
         },
         
         {
@@ -42,14 +42,14 @@ const Home = () => {
             icon: icons.send,
             color: COLORS.yellow,
             backgroundColor: COLORS.lightyellow,
-            description: "Transfer"
+            description: "Thay đổi"
         },
         {
             id: 5,
             icon: icons.bill,
             color: COLORS.yellow,
             backgroundColor: COLORS.lightyellow,
-            description: "Bill"
+            description: "Hóa đơn"
         },
         {
             id: 6,
@@ -63,14 +63,14 @@ const Home = () => {
             icon: icons.phone,
             color: COLORS.red,
             backgroundColor: COLORS.lightRed,
-            description: "Mobile Prepaid"
+            description: "Dịch vụ"
         },
         {
             id: 8,
             icon: icons.more,
             color: COLORS.purple,
             backgroundColor: COLORS.lightpurple,
-            description: "More"
+            description: "Mở rộng"
         },
     ]
 

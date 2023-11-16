@@ -1,33 +1,15 @@
-import { Text, View , Dimensions , TouchableOpacity, Image, Button} from "react-native"
+import { Text, View , Dimensions , TouchableOpacity, Image, Button, ScrollView} from "react-native"
 import { COLORS, SIZES, FONTS, icons, images } from "../constants"
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useState } from "react";
+import { InputComponent } from "../components/InputComponent";
+import { OutComponent } from "../components/OutComponent";
 
 export const IoSite = ({ navigation })=>{
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 
     const [inOutput , setInOutput] = useState(true)
-
-    const renderInput = ()=>{
-        return (
-            <View>
-                <Text>
-                    Input
-                </Text>
-            </View>
-        )
-    }
-
-    const renderOut = ()=>{
-        return (
-            <View>
-                <Text>
-                    output
-                </Text>
-            </View>
-        )
-    }
 
     return (
         <View style={{
@@ -39,14 +21,14 @@ export const IoSite = ({ navigation })=>{
             <View style={{
                 width : windowWidth,
                 height : 100,
-                backgroundColor : COLORS.purple,
+                backgroundColor : COLORS.green,
                 display : "flex",
                 justifyContent : "center",
                 alignItems : "center",
                 paddingTop : 15
             }}>
                 
-                <Text style ={{color : COLORS.white, fontWeight:700}}>Input/Output</Text>
+                <Text style ={{color : COLORS.white, fontWeight:700}}>Nạp/Rút</Text>
             </View>
             <TouchableOpacity style={{
                     padding : 20,
@@ -85,11 +67,11 @@ export const IoSite = ({ navigation })=>{
                             width : 20,
                             height : 20,
                             tintColor: COLORS.white,
-                            backgroundColor : COLORS.purple,
+                            backgroundColor : COLORS.red,
                             marginRight : 3,
                             borderRadius : 4
                         }}></Image>
-                        <Text style={{color : COLORS.purple}}>Input</Text>
+                        <Text style={{color : COLORS.red}}>Nạp</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -111,17 +93,23 @@ export const IoSite = ({ navigation })=>{
                             width : 20,
                             height : 20,
                             tintColor: COLORS.white,
-                            backgroundColor : COLORS.purple,
+                            backgroundColor : COLORS.yellow,
                             marginRight : 3,
                             borderRadius : 4
                         }}></Image>
-                        <Text style={{color : COLORS.purple}}>Ouput</Text>
+                        <Text style={{color : COLORS.yellow}}>Rút</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
 
-            {inOutput ? renderInput() : renderOut()}
+            <View style={{
+                justifyContent : "center",
+                alignItems : "center",
+                marginTop : 15,
+            }}>
+                {inOutput ? <InputComponent/> : <OutComponent/>}    
+            </View>
 
             
             <View style={{
@@ -134,14 +122,14 @@ export const IoSite = ({ navigation })=>{
                 alignItems:"center"
             }}>
                 <TouchableOpacity style={{
-                    backgroundColor: COLORS.purple,
+                    backgroundColor: COLORS.green,
                     width: "95%",
                     height: "70%",
-                    borderRadius : 30,
+                    borderRadius : 15,
                     justifyContent:"center",
                     alignItems:"center"
                 }}>
-                    <Text style={{fontSize:30 , fontWeight :700, color : COLORS.white}}>{inOutput ? "Input" : "Output"}</Text>
+                    <Text style={{fontSize:30 , fontWeight :700, color : COLORS.white}}>{inOutput ? "Nạp" : "Rút"}</Text>
                 </TouchableOpacity>
             </View>
         </View>
