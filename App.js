@@ -6,11 +6,13 @@ import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import Tabs from "./navigation/tabs";
 import { IoSite } from './screens/IoSite';
+import { useStore } from "./store";
 
 
 import {
   StyleSheet
 } from "react-native";
+import { Menu } from './screens/Menu';
 
 
 const theme = {
@@ -24,6 +26,7 @@ const theme = {
 const Stack = createStackNavigator();
 
 export default function App() {
+  const users = useStore((state) => state.users)
 
   const [loaded] = useFonts({
     "Roboto-Black" : require('./assets/fonts/Roboto-Black.ttf'),
@@ -34,24 +37,34 @@ export default function App() {
   if(!loaded){
     return null;
   }
-  return (
-      <NavigationContainer theme={theme}>
-          <Stack.Navigator
-              screenOptions={{
-                  headerShown: false
-              }}
-              initialRouteName={'SignUp'}
-          >
-              <Stack.Screen name="SignUp" component={SignUp} />
+  
 
-              {/* Tabs */}
-              <Stack.Screen name="HomeTabs" component={Tabs} />
+  return  (
+    <>
+    {users != null ? 
+    
+    <NavigationContainer theme={theme}>
+    <Stack.Navigator
+        screenOptions={{
+            headerShown: false
+        }}
+        initialRouteName={'SignUp'}
+    >
+        {/* <Stack.Screen name="SignUp" component={SignUp} /> */}
 
-              <Stack.Screen name="IoSite" component={IoSite} />
+        {/* Tabs */}
+        <Stack.Screen name="HomeTabs" component={Tabs} />
 
-              {/* <Stack.Screen name="Scan" component={Scan} /> */}
-          </Stack.Navigator>
-      </NavigationContainer>
+        <Stack.Screen name="IoSite" component={IoSite} />
+
+        <Stack.Screen name="Menu" component={Menu} />
+
+        {/* <Stack.Screen name="Scan" component={Scan} /> */}
+    </Stack.Navigator>
+</NavigationContainer> : <SignUp/>
+  }
+      
+      </>
   )
   }
 

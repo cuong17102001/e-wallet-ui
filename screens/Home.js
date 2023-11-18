@@ -17,17 +17,19 @@ const Home = () => {
     const featuresData = [
         {
             id: 1,
-            icon: icons.reload,
+            icon: icons.ioIcon,
             color: COLORS.purple,
             backgroundColor: COLORS.lightpurple,
-            description: "Hot"
+            description: "Nạp/Rút",
+            nameSite : "IoSite"
         },
         {
             id: 2,
             icon: icons.wallet,
             color: COLORS.red,
             backgroundColor: COLORS.lightRed,
-            description: "Ví"
+            description: "Chuyển tiền",
+            nameSite : "ChuyenSite"
         },
         
         {
@@ -35,42 +37,47 @@ const Home = () => {
             icon: icons.internet,
             color: COLORS.primary,
             backgroundColor: COLORS.lightGreen,
-            description: "Internet"
+            description: "Internet",
+            nameSite : "InternetSite"
         },
         {
             id: 4,
             icon: icons.send,
             color: COLORS.yellow,
             backgroundColor: COLORS.lightyellow,
-            description: "Thay đổi"
+            description: "Thay đổi",
+            nameSite : "DoiSite"
         },
         {
             id: 5,
             icon: icons.bill,
             color: COLORS.yellow,
             backgroundColor: COLORS.lightyellow,
-            description: "Hóa đơn"
+            description: "Hóa đơn",
+            nameSite : "BillSite"
         },
         {
             id: 6,
             icon: icons.game,
             color: COLORS.primary,
             backgroundColor: COLORS.lightGreen,
-            description: "Games"
+            description: "Games",
+            nameSite : "GameSite"
         },
         {
             id: 7,
             icon: icons.phone,
             color: COLORS.red,
             backgroundColor: COLORS.lightRed,
-            description: "Dịch vụ"
+            description: "Dịch vụ",
+            nameSite : "ServiceSite"
         },
         {
             id: 8,
             icon: icons.more,
             color: COLORS.purple,
             backgroundColor: COLORS.lightpurple,
-            description: "Mở rộng"
+            description: "Mở rộng",
         },
     ]
 
@@ -104,42 +111,19 @@ const Home = () => {
     const [features, setFeatures] = React.useState(featuresData)
     const [specialPromos, setSpecialPromos] = React.useState(specialPromoData)
     const navigation = useNavigation();
+    const users = useStore((state) => state.users)
 
-    const navigateToIoSite = () => {
-        navigation.navigate('IoSite');
-      };
+   
 
     function renderHeader() {
         return (
             <View style={{ flexDirection: 'row', marginVertical: SIZES.padding * 2 }}>
                 <View style={{ flex: 1 }}>
-                    <Text style={{ ...FONTS.h1 }}>Hello Davis!</Text>
-                    <Text style={{ ...FONTS.body2, color: COLORS.gray }}>Account balance:</Text>
-                    <Text style={{ ...FONTS.h3, color: COLORS.purple }}>$100.000</Text>
+                    <Text style={{ ...FONTS.h1 }}>Xin chào!</Text>
+                    <Text style={{ ...FONTS.body2, color: COLORS.gray }}>Số dư:</Text>
+                    <Text style={{ ...FONTS.h3, color: COLORS.purple }}>${users.money.toLocaleString()}</Text>
                     
                 </View>
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                        <TouchableOpacity onPress={()=> navigateToIoSite()} style={{
-                            height: 40,
-                            width: 40,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: COLORS.purple,
-                            borderRadius: 5
-                        }}>
-                            <Image
-                                    source={icons.ioIcon}
-                                    style={{
-                                        width: 20,
-                                        height: 20,
-                                        tintColor: COLORS.gray
-                                    }}
-                                />
-                            
-                        </TouchableOpacity>
-                        <Text style={{ textAlign: 'center', flexWrap: 'wrap', ...FONTS.body4 }}>Input/Output</Text>
-                    </View>
-                
 
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                     <TouchableOpacity
@@ -199,18 +183,24 @@ const Home = () => {
         )
     }
 
+    const handleNavigateSite = (item) => {
+        if (item.nameSite) {
+            navigation.navigate(item.nameSite);
+        } 
+    };
+
     function renderFeatures() {
 
         const Header = () => (
             <View style={{ marginBottom: SIZES.padding * 2 }}>
-                <Text style={{ ...FONTS.h3 }}>Features</Text>
+                <Text style={{ ...FONTS.h3 }}>Chức năng</Text>
             </View>
         )
 
         const renderItem = ({ item }) => (
             <TouchableOpacity
                 style={{ marginBottom: SIZES.padding * 2, width: 60, alignItems: 'center' }}
-                onPress={() => console.log(item.description)}
+                onPress={() => handleNavigateSite(item)}
             >
                 <View
                     style={{
@@ -269,12 +259,12 @@ const Home = () => {
                 }}
             >
                 <View style={{ flex: 1 }}>
-                    <Text style={{ ...FONTS.h3 }}>Special Promos</Text>
+                    <Text style={{ ...FONTS.h3 }}>Tin tức đặc biệt</Text>
                 </View>
                 <TouchableOpacity
                     onPress={() => console.log("View All")}
                 >
-                    <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>View All</Text>
+                    <Text style={{ color: COLORS.gray, ...FONTS.body4 }}>Tất cả</Text>
                 </TouchableOpacity>
             </View>
 

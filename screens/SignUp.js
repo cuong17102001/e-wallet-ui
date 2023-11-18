@@ -13,8 +13,10 @@ import {
     Platform
 } from "react-native"
 import { LinearGradient } from 'expo-linear-gradient'
-
 import { COLORS, SIZES, FONTS, icons, images } from "../constants"
+import axios from "axios"
+import {useStore} from "../store"
+import {env} from "../env.json"
 
 const SignUp = ({ navigation }) => {
 
@@ -24,29 +26,46 @@ const SignUp = ({ navigation }) => {
     const [selectedArea, setSelectedArea] = React.useState(null)
     const [modalVisible, setModalVisible] = React.useState(false)
 
-    React.useEffect(() => {
-        fetch("https://restcountries.com/v3.1/all?fields=name,flags,cca3,idd")
-            .then(response => response.json())
-            .then(data => {
-                let areaData = data.map(item => {
-                    return {
-                        code: item.cca3,
-                        name: item.name?.common,
-                        flag: item.flags.png,
-                        callingCode: item.idd?.root + item.idd?.suffixes[0],
-                    }
-                })
-                setAreas(areaData)
-                
-                if (areaData.length > 0) {
-                    let defaultData = areaData.filter(a => a.code == "US")
+    const [renderUI, setRenderUI] = React.useState(true)
+    const [username, onChangeUsername] = React.useState("");
+    const [password, onChangePassword] = React.useState("")
+    const [fullname, onChangeFullname] = React.useState("")
 
-                    if (defaultData.length > 0) {
-                        setSelectedArea(defaultData[0])
-                    }
-                }
-            })
-    }, [])
+    const setUsers = useStore((state) => state.setUsers)
+
+    const authPress = ()=>{
+        if (!renderUI) {
+            if (fullname && username && password) {
+                axios.post(env.API_URL+'/auth/register', {
+                    username: username,
+                    password: password,
+                    fullname : fullname
+                    })
+                    .then(function (response) {
+                        setUsers(response.data.user)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                
+            }
+        }else{
+            if (username && password) {
+                axios.post(env.API_URL+'/auth/login', {
+                    username: username,
+                    password: password
+                  })
+                  .then(function (response) {
+                    setUsers(response.data.user)
+                  })
+                  .catch(function (error) {
+                    console.log(error);
+                  });
+            }else{
+                console.log("nhập đẩy đủ thông tin");
+            }
+        }
+    }
 
     function renderHeader() {
         return (
@@ -57,7 +76,7 @@ const SignUp = ({ navigation }) => {
                     marginTop: SIZES.padding * 6,
                     paddingHorizontal: SIZES.padding * 2
                 }}
-                onPress={() => console.log("Sign Up")}
+                onPress={() => setRenderUI(e => !e)}
             >
                 <Image
                     source={icons.back}
@@ -69,7 +88,7 @@ const SignUp = ({ navigation }) => {
                     }}
                 />
 
-                <Text style={{ marginLeft: SIZES.padding * 1.5, color: COLORS.white, ...FONTS.h4 }}>Sign Up</Text>
+                <Text style={{ marginLeft: SIZES.padding * 1.5, color: COLORS.white, ...FONTS.h4 }}>{renderUI ? "Register" : "Login"}</Text>
             </TouchableOpacity>
         )
     }
@@ -104,8 +123,31 @@ const SignUp = ({ navigation }) => {
                 }}
             >
                 {/* Full Name */}
+                {
+                    !renderUI ?
+                    <View style={{ marginTop: SIZES.padding * 3 }}>
+                        <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>Full Name</Text>
+                        <TextInput
+                            style={{
+                                marginVertical: SIZES.padding,
+                                borderBottomColor: COLORS.white,
+                                borderBottomWidth: 1,
+                                height: 40,
+                                color: COLORS.white,
+                                ...FONTS.body3
+                            }}
+                            placeholder="Enter Full Name"
+                            placeholderTextColor={COLORS.white}
+                            selectionColor={COLORS.white}
+                            onChangeText={onChangeFullname}
+                            value={fullname}
+                        />
+                    </View> : <></>
+                }    
+
+                {/* Username */}
                 <View style={{ marginTop: SIZES.padding * 3 }}>
-                    <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>Full Name</Text>
+                    <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>Username</Text>
                     <TextInput
                         style={{
                             marginVertical: SIZES.padding,
@@ -115,18 +157,20 @@ const SignUp = ({ navigation }) => {
                             color: COLORS.white,
                             ...FONTS.body3
                         }}
-                        placeholder="Enter Full Name"
+                        placeholder="Enter username"
                         placeholderTextColor={COLORS.white}
                         selectionColor={COLORS.white}
+                        onChangeText={onChangeUsername}
+                        value={username}
                     />
                 </View>
 
                 {/* Phone Number */}
-                <View style={{ marginTop: SIZES.padding * 2 }}>
+                {/* <View style={{ marginTop: SIZES.padding * 2 }}>
                     <Text style={{ color: COLORS.lightGreen, ...FONTS.body3 }}>Phone Number</Text>
 
                     <View style={{ flexDirection: 'row' }}>
-                        {/* Country Code */}
+                  
                         <TouchableOpacity
                             style={{
                                 width: 100,
@@ -165,7 +209,7 @@ const SignUp = ({ navigation }) => {
                             </View>
                         </TouchableOpacity>
 
-                        {/* Phone Number */}
+                   
                         <TextInput
                             style={{
                                 flex: 1,
@@ -181,7 +225,7 @@ const SignUp = ({ navigation }) => {
                             selectionColor={COLORS.white}
                         />
                     </View>
-                </View>
+                </View> */}
 
                 {/* Password */}
                 <View style={{ marginTop: SIZES.padding * 2 }}>
@@ -199,6 +243,8 @@ const SignUp = ({ navigation }) => {
                         placeholderTextColor={COLORS.white}
                         selectionColor={COLORS.white}
                         secureTextEntry={!showPassword}
+                        onChangeText={onChangePassword}
+                        value={password}
                     />
                     <TouchableOpacity
                         style={{
@@ -235,9 +281,9 @@ const SignUp = ({ navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}
-                    onPress={() => navigation.navigate("HomeTabs")}
+                    onPress={() => authPress()}
                 >
-                    <Text style={{ color: COLORS.white, ...FONTS.h3 }}>Continue</Text>
+                    <Text style={{ color: COLORS.white, ...FONTS.h3 }}>{renderUI ? "Login" : "Register"}</Text>
                 </TouchableOpacity>
             </View>
         )
