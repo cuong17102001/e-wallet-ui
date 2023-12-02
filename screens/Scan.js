@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     View,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    StyleSheet
 } from "react-native"
 import { Camera } from 'expo-camera'
 import { COLORS, FONTS, SIZES, icons, images } from "../constants";
 import { useStore } from "../store"
+import { BarCodeScanner } from "expo-barcode-scanner";
+import QRCode from "react-native-qrcode-svg";
+import { MyQrcode } from "./MyQrcode";
+import { useNavigation } from "@react-navigation/native";
 
-const Scan = ({ navigation }) => {
+const Scan = () => {
     const [hasPermission, setHasPermission] = React.useState(null);
+    const [scanned, setScanned] = useState(false);
+    const navigation = useNavigation();
+    
 
     React.useEffect(() => {
         (async () => {
@@ -25,6 +33,11 @@ const Scan = ({ navigation }) => {
     if (hasPermission === false) {
         return <Text>No access to camera</Text>;
     }
+
+    const handleBarCodeScanned = ({ type, data }) => {
+        setScanned(true);
+        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+      };
 
     function renderHeader() {
         return (
@@ -60,10 +73,10 @@ const Scan = ({ navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}
-                    onPress={() => console.log("Info")}
+                    onPress={() =>navigation.navigate("MyQrcode")}
                 >
                     <Image
-                        source={icons.info}
+                        source={icons.Qr}
                         style={{
                             height: 25,
                             width: 25,
@@ -149,16 +162,15 @@ const Scan = ({ navigation }) => {
                                 }}
                             />
                         </View>
-                        <Text style={{ marginLeft: SIZES.padding, ...FONTS.body4 }}>Phone Number</Text>
+                        <Text style={{ marginLeft: SIZES.padding, ...FONTS.body4 }}>Số điện thoại</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             marginLeft: SIZES.padding * 2
                         }}
-                        onPress={() => console.log("Barcode")}
+                        onPress={() => setScanned(false)}
                     >
                         <View
                             style={{
@@ -171,7 +183,7 @@ const Scan = ({ navigation }) => {
                             }}
                         >
                             <Image
-                                source={icons.barcode}
+                                source={icons.reload}
                                 resizeMode="cover"
                                 style={{
                                     height: 25,
@@ -180,41 +192,25 @@ const Scan = ({ navigation }) => {
                                 }}
                             />
                         </View>
-                        <Text style={{ marginLeft: SIZES.padding, ...FONTS.body4 }}>Barcode</Text>
+                        <Text style={{ marginLeft: SIZES.padding, ...FONTS.body4 }}>Tiếp tục scan</Text>
                     </TouchableOpacity>
+                    
                 </View>
             </View>
         )
-    }
-
-    function onBarCodeRead(result) {
-        console.log(result.data)
-    }
-
-    
+    }  
 
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.transparent }}>
-            <Camera
-                ref={ref => {
-                    this.camera = ref
-                }}
-                style={{ flex: 1 }}
-                captureAudio={false}
-                type={Camera.Constants.Type.back}
-                flashMode={Camera.Constants.FlashMode.off}
-                onBarCodeScanned={onBarCodeRead}
-                androidCameraPermissionOptions={{
-                    title: "Permission to use camera",
-                    message: "Camera is required for barcode scanning",
-                    buttonPositive: "OK",
-                    buttonNegative: "Cancel"
-                }}
+            <BarCodeScanner
+            style={StyleSheet.absoluteFillObject}
+                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
             >
                 {renderHeader()}
                 {renderScanFocus()}
                 {renderPaymentMethods()}
-            </Camera>
+
+            </BarCodeScanner>
         </View>
     )
 }

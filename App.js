@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { SignUp } from "./screens";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -13,6 +13,7 @@ import {
   StyleSheet
 } from "react-native";
 import { Menu } from './screens/Menu';
+import { MyQrcode } from './screens/MyQrcode';
 
 
 const theme = {
@@ -33,7 +34,7 @@ export default function App() {
     "Roboto-Bold" : require('./assets/fonts/Roboto-Bold.ttf'),
     "Roboto-Regular" : require('./assets/fonts/Roboto-Regular.ttf'),
   })
-
+   
   if(!loaded){
     return null;
   }
@@ -58,6 +59,8 @@ export default function App() {
         <Stack.Screen name="IoSite" component={IoSite} />
 
         <Stack.Screen name="Menu" component={Menu} />
+
+        <Stack.Screen name="MyQrcode" component={MyQrcode} />
 
         {/* <Stack.Screen name="Scan" component={Scan} /> */}
     </Stack.Navigator>

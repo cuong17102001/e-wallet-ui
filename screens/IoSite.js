@@ -1,15 +1,324 @@
-import { Text, View , Dimensions , TouchableOpacity, Image, Button, ScrollView} from "react-native"
+import { Text, View , Dimensions , TouchableOpacity, Image, Button, ScrollView, TextInput} from "react-native"
 import { COLORS, SIZES, FONTS, icons, images } from "../constants"
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { useState } from "react";
-import { InputComponent } from "../components/InputComponent";
-import { OutComponent } from "../components/OutComponent";
+import { useStore } from "../store";
+import axios from "axios";
+import {env} from "../env.json"
 
 export const IoSite = ({ navigation })=>{
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 
+    const users = useStore((state) => state.users)
+
     const [inOutput , setInOutput] = useState(true)
+    
+    const [rutTien, onChangeRutTien] = useState("")
+    const [napTien, onChangeNapTien] = useState("")
+
+    const setUsers = useStore((state) => state.setUsers)
+
+    const renderInput = ()=>{
+        return (
+            <ScrollView style={{
+                width : windowWidth * 95 / 100,
+            }}>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15
+                }}>
+                    <Text>Nạp tiền vào ví</Text>
+                    <View style={{
+                        borderColor : COLORS.primary,
+                        borderWidth : 1,
+                        borderRadius : 10,
+                        padding : 10,
+                    }}>
+                        <Text>Ví</Text>
+                        <Text style={{fontWeight:800}}>${users.money.toLocaleString()}</Text>
+                    </View>
+                    <View style={{
+                        borderColor : COLORS.gray,
+                        marginTop: 15,
+                        borderRadius : 10,
+                        borderWidth : 1,
+                        padding : 10,
+                        position : "relative"
+                    }}>
+                        <Text style={{
+                            position : "absolute",
+                            zIndex : 1000,
+                            backgroundColor : COLORS.white,
+                            color : COLORS.darkgray,
+                            top : -10,
+                            left : 10
+                        }}>
+                            Số tiền cần nạp
+                        </Text>
+                        <TextInput value={napTien} onChangeText={onChangeNapTien} placeholder="$0"  style={{
+                            height : 30
+                        }}/>
+                    </View>
+                </View>
+                <Text style={{
+                    padding : 15,
+                    fontWeight : 800
+                }}>
+                    Từ nguồn tiền
+                </Text>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+    
+                }}>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.primary,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                        marginBottom : 10
+                    }}>
+                        <Image source={icons.Bank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>Ngân hàng ảo</Text>
+                            <Text>Miễn phí hoàn toàn</Text>
+                        </View>
+                    </View>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.darkgray,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                    }}>
+                        <Image source={icons.VietinBank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>VietinBank</Text>
+                            <Text>Hiện chưa dùng được</Text>
+                        </View>
+                    </View>
+                </View>
+    
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+                    marginTop : 15
+                }}>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.darkgray,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                        
+                    }}>
+                        <Image source={icons.Bank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>Thêm liên kết với ngân hàng</Text>
+                            <Text>Hiện chưa dùng được</Text>
+                        </View>
+                    </View>
+                </View>
+                <Text style={{
+                    padding : 15,
+                    fontWeight : 800
+                }}>
+                    Tiện ích
+                </Text>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+                    height : 200
+                }}>
+    
+                </View>
+            </ScrollView>
+        )
+    }
+
+    const renderOutput = ()=>{
+        return (
+            <ScrollView style={{
+                width : windowWidth * 95 / 100,
+            }}>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15
+                }}>
+                    <Text>Rút tiền từ ví</Text>
+                    <View style={{
+                        borderColor : COLORS.primary,
+                        borderWidth : 1,
+                        borderRadius : 10,
+                        padding : 10,
+                    }}>
+                        <Text>Ví</Text>
+                        <Text style={{fontWeight:800}}>${users.money.toLocaleString()}</Text>
+                    </View>
+                    
+                    <View style={{
+                        borderColor :rutTien > users.money ? COLORS.red : COLORS.gray,
+                        marginTop: 15,
+                        borderRadius : 10,
+                        borderWidth : 1,
+                        padding : 10,
+                        position : "relative"
+                    }}>
+                        <Text style={{
+                            position : "absolute",
+                            zIndex : 1000,
+                            backgroundColor : COLORS.white,
+                            color :rutTien > users.money ?COLORS.red : COLORS.darkgray,
+                            top : -10,
+                            left : 10
+                        }}>
+                            Số tiền cần rút
+                        </Text>
+                        <TextInput 
+                            onChangeText={onChangeRutTien}
+                            value={rutTien} 
+                            placeholder="$0"  
+                            style={{
+                                height : 30
+                            }
+                        }/>
+                    </View>
+                    {rutTien > users.money ? <Text style={{color : COLORS.red}}>Số dư không đủ</Text> : <></>}
+                </View>
+                <Text style={{
+                    padding : 15,
+                    fontWeight : 800
+                }}>
+                    Rút tiền về
+                </Text>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+    
+                }}>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.primary,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                        marginBottom : 10
+                    }}>
+                        <Image source={icons.Bank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>Ngân hàng ảo</Text>
+                            <Text>Miễn phí hoàn toàn</Text>
+                        </View>
+                    </View>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.darkgray,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                    }}>
+                        <Image source={icons.VietinBank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>VietinBank</Text>
+                            <Text>Hiện chưa dùng được</Text>
+                        </View>
+                    </View>
+                </View>
+    
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+                    marginTop : 15
+                }}>
+                    <View style={{
+                        flexDirection : "row",
+                        borderColor : COLORS.darkgray,
+                        borderWidth : 1,
+                        padding : 10,
+                        borderRadius : 10,
+                        
+                    }}>
+                        <Image source={icons.Bank} style={{
+                            width : 30,
+                            height : 30
+                        }}></Image>
+                        <View style={{
+                            marginLeft : 10
+                        }}>
+                            <Text style={{fontWeight:800}}>Thêm liên kết với ngân hàng</Text>
+                            <Text>Hiện chưa dùng được</Text>
+                        </View>
+                    </View>
+                </View>
+                <Text style={{
+                    padding : 15,
+                    fontWeight : 800
+                }}>
+                    Tiện ích
+                </Text>
+                <View style={{
+                    backgroundColor : COLORS.white,
+                    padding : 10,
+                    borderRadius : 15,
+                    height : 200
+                }}>
+    
+                </View>
+            </ScrollView>
+        )
+    }
+
+
+    const submitTien = (url) => {
+        console.log(env.API_URL+`/user/${users._id}/${url}`);
+        axios.post(env.API_URL+`/user/${users._id}/${url}`, {
+            sotien : inOutput ? parseFloat( napTien) : parseFloat(rutTien)
+            })
+            .then(function (response) {
+                setUsers(response.data)
+
+                onChangeNapTien("")
+                onChangeRutTien("")
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
 
     return (
         <View style={{
@@ -108,7 +417,7 @@ export const IoSite = ({ navigation })=>{
                 alignItems : "center",
                 marginTop : 15,
             }}>
-                {inOutput ? <InputComponent/> : <OutComponent/>}    
+                {inOutput ? renderInput() : renderOutput()}    
             </View>
 
             
@@ -128,13 +437,13 @@ export const IoSite = ({ navigation })=>{
                     borderRadius : 15,
                     justifyContent:"center",
                     alignItems:"center"
-                }}>
+                }}
+                onPress={() =>inOutput ? submitTien("naptien") : submitTien("ruttien")}>
                     <Text style={{fontSize:30 , fontWeight :700, color : COLORS.white}}>{inOutput ? "Nạp" : "Rút"}</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
-
 
     
 }
