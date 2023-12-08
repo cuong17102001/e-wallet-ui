@@ -57,7 +57,7 @@ export const IoSite = ({ navigation })=>{
                         }}>
                             Số tiền cần nạp
                         </Text>
-                        <TextInput value={napTien} onChangeText={onChangeNapTien} placeholder="$0"  style={{
+                        <TextInput value={napTien} onChangeText={onChangeNapTien} keyboardType = 'numeric' placeholder="$0"  style={{
                             height : 30
                         }}/>
                     </View>
@@ -197,6 +197,7 @@ export const IoSite = ({ navigation })=>{
                             Số tiền cần rút
                         </Text>
                         <TextInput 
+                        keyboardType = 'numeric'
                             onChangeText={onChangeRutTien}
                             value={rutTien} 
                             placeholder="$0"  

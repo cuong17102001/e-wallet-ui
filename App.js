@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { SignUp } from "./screens";
+import { Home, SignUp } from "./screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import { Menu } from './screens/Menu';
 import { MyQrcode } from './screens/MyQrcode';
+import { payment } from './screens/payment';
+import { successPaypment } from './screens/successPaypment';
 
 
 const theme = {
@@ -27,6 +29,7 @@ const theme = {
 const Stack = createStackNavigator();
 
 export default function App() {
+
   const users = useStore((state) => state.users)
 
   const [loaded] = useFonts({
@@ -61,6 +64,10 @@ export default function App() {
         <Stack.Screen name="Menu" component={Menu} />
 
         <Stack.Screen name="MyQrcode" component={MyQrcode} />
+
+        <Stack.Screen name="Payment" component={payment} />
+
+        <Stack.Screen name="Success" component={successPaypment} />
 
         {/* <Stack.Screen name="Scan" component={Scan} /> */}
     </Stack.Navigator>

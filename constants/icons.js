@@ -21,6 +21,7 @@ const Ouput = require("../assets/icons/output.png")
 const Bank = require("../assets/icons/bank.png")
 const VietinBank = require("../assets/icons/vietinbank.png")
 const Qr = require("../assets/icons/qr.png")
+const success = require("../assets/icons/success.png")
 
 export default {
     back,
@@ -45,5 +46,6 @@ export default {
     Ouput,
     Bank,
     VietinBank,
-    Qr
+    Qr,
+    success
 }
